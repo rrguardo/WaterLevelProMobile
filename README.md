@@ -7,6 +7,14 @@
 The official (and Open Source) mobile application for connecting to the **WaterLevel.Pro** platform.
 This application is built with Flutter, offering a fast and smooth dashboard with a modern "Dark Mode" design for the WaterLevel ecosystem.
 
+## Screenshots 📸
+
+| Sensor Details | Pump Controller |
+|:---:|:---:|
+| <img src="docs/img/app1.png" width="200"> | <img src="docs/img/app2.png" width="200"> |
+| Device List | Widget |
+| <img src="docs/img/app3.png" width="200"> | <img src="docs/img/app4.png" width="200"> |
+
 ## Features 🚀
 
 - **Native Authentication**: Clean login and registration interface, featuring a native and invisible reCAPTCHA v2 integration (WebView-based) to ensure backend security.
