@@ -1,0 +1,65 @@
+# Flutter
+**/doc/api/
+.dart_tool/
+.pub/
+.pub-cache/
+.packages
+.pub-preload-cache/
+.buildlog/
+*.js_
+*.js.deps
+*.js.map
+.flutter-plugins
+.flutter-plugins-dependencies
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+**/macos/Flutter/ephemeral
+**/macos/Flutter/Flutter.framework
+**/macos/Flutter/Flutter.podspec
+**/macos/Flutter/Generated.xcconfig
+**/macos/Flutter/flutter_export_environment.sh
+**/linux/flutter/ephemeral
+**/linux/flutter/generated_plugin_registrant.*
+
+# Build outputs
+/build/
+/coverage/
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# Symbolication / Obfuscation
+app.*.symbols
+app.*.map.json
+
+# Android Studio / IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code
+.vscode/
+
+# Windows
+*.exe
+*.dll
+
+# Linux
+*.o
+*.so
+
+# macOS
+*.dylib
