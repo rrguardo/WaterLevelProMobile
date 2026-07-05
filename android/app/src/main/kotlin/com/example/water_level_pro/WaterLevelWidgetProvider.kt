@@ -9,11 +9,22 @@ import android.widget.RemoteViews
 
 class WaterLevelWidgetProvider : AppWidgetProvider() {
 
+    override fun onEnabled(context: Context) {
+        super.onEnabled(context)
+        WidgetForegroundService.start(context)
+    }
+
+    override fun onDisabled(context: Context) {
+        super.onDisabled(context)
+        WidgetForegroundService.stop(context)
+    }
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
+        WidgetForegroundService.start(context)
         val prefs: SharedPreferences =
             context.getSharedPreferences("HomeWidgetPreferences", Context.MODE_PRIVATE)
 

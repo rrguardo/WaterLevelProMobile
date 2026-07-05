@@ -4,11 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
 const String _taskName = 'fetchWaterLevel';
+const String _immediateTaskName = 'fetchWaterLevelImmediate';
 
 @pragma('vm:entry-point')
 void widgetBackgroundCallback() {
   Workmanager().executeTask((task, inputData) async {
-    if (task != _taskName) return false;
+    if (task != _taskName && task != _immediateTaskName) return false;
     try {
       final prefs = await SharedPreferences.getInstance();
       final String? publicKey = prefs.getString('widget_public_key');
@@ -63,7 +64,7 @@ void widgetBackgroundCallback() {
 }
 
 Future<void> registerWidgetBackgroundTask() async {
-      await Workmanager().registerPeriodicTask(
+  await Workmanager().registerPeriodicTask(
     _taskName,
     _taskName,
     frequency: const Duration(minutes: 15),
@@ -71,5 +72,17 @@ Future<void> registerWidgetBackgroundTask() async {
       networkType: NetworkType.connected,
     ),
     existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
+  );
+
+  // Trigger a near-immediate refresh so the widget doesn't wait for the
+  // first periodic window after the app goes to background.
+  await Workmanager().registerOneOffTask(
+    _immediateTaskName,
+    _immediateTaskName,
+    constraints: Constraints(
+      networkType: NetworkType.connected,
+    ),
+    initialDelay: const Duration(seconds: 10),
+    existingWorkPolicy: ExistingWorkPolicy.replace,
   );
 }
