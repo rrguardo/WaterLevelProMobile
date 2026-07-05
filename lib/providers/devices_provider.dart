@@ -29,9 +29,10 @@ class DevicesProvider extends ChangeNotifier {
   }
 
   Future<void> _saveWidgetDevice() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('widget_public_key')) return;
     for (final device in _devices) {
       if (device['type'] == 1) {
-        final prefs = await SharedPreferences.getInstance();
         await prefs.setString('widget_public_key', device['public_key'] ?? '');
         await prefs.setString('widget_device_name', device['name'] ?? 'Water Level');
         break;
