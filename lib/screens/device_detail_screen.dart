@@ -104,11 +104,23 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
         liters = '${double.tryParse(data['current_liters'].toString())?.toStringAsFixed(0) ?? '0'} L';
       }
 
+      String voltage = '';
+      final v = data['voltage'];
+      if (v != null) {
+        final double volt = double.tryParse(v.toString()) ?? 0;
+        voltage = '${volt.toStringAsFixed(1)}V';
+      }
+      final diffTime = data['diff_time'];
+      final int secondsSinceUpdate = int.tryParse(diffTime?.toString() ?? '') ?? 0;
+      final bool isOnline = secondsSinceUpdate < 300;
+
       WidgetService.saveSensorWidgetData(
         deviceName: widget.device['name'] ?? 'Water Level',
         percent: '${(fillPercentage * 100).toStringAsFixed(0)}%',
         level: '${waterHeight.toStringAsFixed(1)} cm',
         liters: liters,
+        voltage: voltage,
+        isOnline: isOnline,
       );
     } catch (_) {}
   }

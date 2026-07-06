@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">WaterLevel.Pro</string>
+    <string name="water_level">Water level</string>
+    <string name="widget_default_percent">--%</string>
+    <string name="widget_branding">waterlevel.pro</string>
 </resources>

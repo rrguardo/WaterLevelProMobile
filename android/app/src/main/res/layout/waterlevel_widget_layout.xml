@@ -2,83 +2,228 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/widget_bg">
+    android:background="@drawable/widget_bg"
+    android:padding="10dp"
+    android:clipChildren="true">
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="16dp"
+        android:id="@+id/sphere_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <ImageView
-            android:id="@+id/sphere_bg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/sphere_bg"
-            android:scaleType="fitCenter" />
-
-        <ImageView
-            android:id="@+id/water_fill_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/water_clip"
-            android:scaleType="fitCenter"
-            android:contentDescription="Water level" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/sphere_highlight"
+            android:id="@+id/sphere_glow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sphere_glow"
             android:scaleType="fitCenter"
             android:contentDescription="@null" />
 
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:id="@+id/sphere_inner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
-            <TextView
-                android:id="@+id/widget_percent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="#FFFFFFFF"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                android:shadowColor="#90000000"
-                android:shadowDx="0"
-                android:shadowDy="2"
-                android:shadowRadius="4"
-                android:text="--%" />
-
-            <TextView
-                android:id="@+id/widget_subtext"
+            <ImageView
+                android:id="@+id/sphere_bg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="16dp"
-                android:textColor="#E0FFFFFF"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:shadowColor="#90000000"
-                android:shadowDx="0"
-                android:shadowDy="1"
-                android:shadowRadius="3"
-                android:visibility="gone"
-                android:text="" />
+                android:src="@drawable/sphere_bg"
+                android:scaleType="fitCenter"
+                android:contentDescription="@null" />
+
+            <ImageView
+                android:id="@+id/water_fill_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/water_clip"
+                android:scaleType="fitCenter"
+                android:contentDescription="Water level" />
+
+            <ImageView
+                android:id="@+id/sphere_highlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/sphere_highlight"
+                android:scaleType="fitCenter"
+                android:contentDescription="@null" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:id="@+id/widget_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="31sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:shadowColor="#70000000"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="3"
+                    android:textStyle="bold"
+                    android:text="--%" />
+
+                <TextView
+                    android:id="@+id/widget_subtext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="14dp"
+                    android:textColor="#D9FFFFFF"
+                    android:textSize="11sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:text="" />
+
+            </FrameLayout>
 
         </FrameLayout>
 
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/corner_tl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="2dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/widget_chip_bg"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
+
+        <ImageView
+            android:id="@+id/icon_online"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:src="@drawable/ic_online"
+            android:contentDescription="Online" />
+
+        <ImageView
+            android:id="@+id/icon_offline"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:src="@drawable/ic_offline"
+            android:contentDescription="Offline"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/text_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="#FF4CAF50"
+            android:textSize="9sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="bold"
+            android:maxWidth="64dp"
+            android:ellipsize="end"
+            android:text="Online" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/corner_tr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="2dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/widget_chip_bg"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
+
+        <ImageView
+            android:id="@+id/icon_battery"
+            android:layout_width="12dp"
+            android:layout_height="9dp"
+            android:src="@drawable/ic_battery"
+            android:contentDescription="Voltage" />
+
+        <TextView
+            android:id="@+id/text_voltage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="#FFFFE9A6"
+            android:textSize="9sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="bold"
+            android:maxWidth="58dp"
+            android:ellipsize="end"
+            android:text="--" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/corner_bl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="2dp"
+        android:layout_marginStart="2dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/widget_chip_bg"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
+
+        <ImageView
+            android:id="@+id/icon_level"
+            android:layout_width="10dp"
+            android:layout_height="12dp"
+            android:src="@drawable/ic_level"
+            android:contentDescription="Level"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/text_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="#FF8BE6F7"
+            android:textSize="9sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="bold"
+            android:maxWidth="64dp"
+            android:ellipsize="end"
+            android:text="--" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/widget_branding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="4dp"
-        android:textColor="#60FFFFFF"
-        android:textSize="8sp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="2dp"
+        android:textColor="#B3E8F6FF"
+        android:textSize="10sp"
+        android:fontFamily="sans-serif-medium"
+        android:shadowColor="#60000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+        android:textStyle="bold"
         android:text="waterlevel.pro" />
 
 </FrameLayout>

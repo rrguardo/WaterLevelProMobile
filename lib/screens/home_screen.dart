@@ -96,11 +96,23 @@ class _HomeScreenState extends State<HomeScreen> {
         liters = '${double.tryParse(data['current_liters'].toString())?.toStringAsFixed(0) ?? '0'} L';
       }
 
+      String voltage = '';
+      final v = data['voltage'];
+      if (v != null) {
+        final double volt = double.tryParse(v.toString()) ?? 0;
+        voltage = '${volt.toStringAsFixed(1)}V';
+      }
+      final diffTime = data['diff_time'];
+      final int secondsSinceUpdate = int.tryParse(diffTime?.toString() ?? '') ?? 0;
+      final bool isOnline = secondsSinceUpdate < 300;
+
       WidgetService.saveSensorWidgetData(
         deviceName: 'Water Level',
         percent: '${(fillPct * 100).toStringAsFixed(0)}%',
         level: '${waterHeight.toStringAsFixed(1)} cm',
         liters: liters,
+        voltage: voltage,
+        isOnline: isOnline,
       );
     } catch (_) {}
   }
@@ -157,18 +169,27 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _showWidgetSettings() async {
     final showSubtext = await WidgetService.getShowSubtext();
     final subtextMode = await WidgetService.getSubtextMode();
+    final showOnline = await WidgetService.getShowCorner('online');
+    final showVoltage = await WidgetService.getShowCorner('voltage');
+    final showLevel = await WidgetService.getShowCorner('level');
 
     final result = await showDialog<Map<String, dynamic>>(
       context: context,
       builder: (ctx) => _WidgetSettingsDialog(
         initialShowSubtext: showSubtext,
         initialMode: subtextMode,
+        initialShowOnline: showOnline,
+        initialShowVoltage: showVoltage,
+        initialShowLevel: showLevel,
       ),
     );
 
     if (result == null || !mounted) return;
     await WidgetService.setShowSubtext(result['showSubtext'] as bool);
     await WidgetService.setSubtextMode(result['subtextMode'] as String);
+    await WidgetService.setShowCorner('online', result['showOnline'] as bool);
+    await WidgetService.setShowCorner('voltage', result['showVoltage'] as bool);
+    await WidgetService.setShowCorner('level', result['showLevel'] as bool);
   }
 
   void _logout() async {
@@ -422,7 +443,16 @@ class _HomeScreenState extends State<HomeScreen> {
 class _WidgetSettingsDialog extends StatefulWidget {
   final bool initialShowSubtext;
   final String initialMode;
-  const _WidgetSettingsDialog({required this.initialShowSubtext, required this.initialMode});
+  final bool initialShowOnline;
+  final bool initialShowVoltage;
+  final bool initialShowLevel;
+  const _WidgetSettingsDialog({
+    required this.initialShowSubtext,
+    required this.initialMode,
+    required this.initialShowOnline,
+    required this.initialShowVoltage,
+    required this.initialShowLevel,
+  });
 
   @override
   State<_WidgetSettingsDialog> createState() => _WidgetSettingsDialogState();
@@ -431,12 +461,18 @@ class _WidgetSettingsDialog extends StatefulWidget {
 class _WidgetSettingsDialogState extends State<_WidgetSettingsDialog> {
   late bool _showSubtext;
   late String _mode;
+  late bool _showOnline;
+  late bool _showVoltage;
+  late bool _showLevel;
 
   @override
   void initState() {
     super.initState();
     _showSubtext = widget.initialShowSubtext;
     _mode = widget.initialMode;
+    _showOnline = widget.initialShowOnline;
+    _showVoltage = widget.initialShowVoltage;
+    _showLevel = widget.initialShowLevel;
   }
 
   @override
@@ -448,23 +484,51 @@ class _WidgetSettingsDialogState extends State<_WidgetSettingsDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text('Corner Info', style: TextStyle(color: Colors.cyanAccent, fontSize: 13, fontWeight: FontWeight.w600)),
+          SizedBox(height: 4),
           SwitchListTile(
-            title: Text('Show extra info', style: TextStyle(color: Colors.white, fontSize: 14)),
-            subtitle: Text('Display cm / device name below %', style: TextStyle(color: Colors.grey[400], fontSize: 12)),
+            title: Text('Status (Online/Offline)', style: TextStyle(color: Colors.white, fontSize: 13)),
+            value: _showOnline,
+            activeColor: Colors.greenAccent,
+            onChanged: (v) => setState(() => _showOnline = v),
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+          ),
+          SwitchListTile(
+            title: Text('Voltage', style: TextStyle(color: Colors.white, fontSize: 13)),
+            value: _showVoltage,
+            activeColor: Colors.amber,
+            onChanged: (v) => setState(() => _showVoltage = v),
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+          ),
+          SwitchListTile(
+            title: Text('Water level (cm)', style: TextStyle(color: Colors.white, fontSize: 13)),
+            value: _showLevel,
+            activeColor: Colors.cyanAccent,
+            onChanged: (v) => setState(() => _showLevel = v),
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+          ),
+          Divider(color: Colors.grey[700], height: 16),
+          SwitchListTile(
+            title: Text('Show extra info', style: TextStyle(color: Colors.white, fontSize: 13)),
+            subtitle: Text('Display cm / name below %', style: TextStyle(color: Colors.grey[400], fontSize: 11)),
             value: _showSubtext,
             activeColor: Colors.cyanAccent,
             onChanged: (v) => setState(() => _showSubtext = v),
             contentPadding: EdgeInsets.zero,
+            dense: true,
           ),
           if (_showSubtext) ...[
-            SizedBox(height: 8),
-            Text('Info mode:', style: TextStyle(color: Colors.grey[300], fontSize: 13)),
+            SizedBox(height: 6),
+            Text('Info mode:', style: TextStyle(color: Colors.grey[300], fontSize: 12)),
             ...['cm', 'name', 'both'].map((m) => RadioListTile<String>(
               title: Text({
                 'cm': 'Water level (cm)',
                 'name': 'Device name',
                 'both': 'Name + level',
-              }[m]!, style: TextStyle(color: Colors.white, fontSize: 13)),
+              }[m]!, style: TextStyle(color: Colors.white, fontSize: 12)),
               value: m,
               groupValue: _mode,
               activeColor: Colors.cyanAccent,
@@ -484,6 +548,9 @@ class _WidgetSettingsDialogState extends State<_WidgetSettingsDialog> {
           onPressed: () => Navigator.pop(context, {
             'showSubtext': _showSubtext,
             'subtextMode': _mode,
+            'showOnline': _showOnline,
+            'showVoltage': _showVoltage,
+            'showLevel': _showLevel,
           }),
           child: Text('Apply', style: TextStyle(color: Colors.blueAccent)),
         ),

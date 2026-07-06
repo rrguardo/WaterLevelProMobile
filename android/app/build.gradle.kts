@@ -6,8 +6,11 @@ plugins {
 
 android {
     namespace = "com.example.water_level_pro"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 37
+    
+    // Fallback if flutter object is not fully initialized in IDE context
+    val ndkVersionStr = try { flutter.ndkVersion } catch (e: Exception) { "25.2.9519653" }
+    ndkVersion = ndkVersionStr
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -15,14 +18,15 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.water_level_pro"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        targetSdk = 37
+        
+        val vCode = try { flutter.versionCode } catch (e: Exception) { 1 }
+        val vName = try { flutter.versionName } catch (e: Exception) { "1.0.0" }
+        
+        versionCode = vCode
+        versionName = vName
     }
 
     buildTypes {
@@ -30,8 +34,14 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+}
+
+dependencies {
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.11.0")
 }
 
 kotlin {

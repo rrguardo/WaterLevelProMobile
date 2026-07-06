@@ -38,6 +38,16 @@ class WidgetService {
     await _triggerUpdate();
   }
 
+  static Future<bool> getShowCorner(String corner) async {
+    final val = await HomeWidget.getWidgetData<String>('show_corner_$corner', defaultValue: 'true');
+    return val != 'false';
+  }
+
+  static Future<void> setShowCorner(String corner, bool show) async {
+    await HomeWidget.saveWidgetData('show_corner_$corner', show ? 'true' : 'false');
+    await _triggerUpdate();
+  }
+
   static Future<void> _triggerUpdate() async {
     await HomeWidget.updateWidget(androidName: 'WaterLevelWidgetProvider');
   }
@@ -47,12 +57,30 @@ class WidgetService {
     required String percent,
     required String level,
     required String liters,
+    String voltage = '',
+    bool isOnline = true,
   }) async {
     await HomeWidget.saveWidgetData('deviceName', deviceName);
     await HomeWidget.saveWidgetData('percent', percent);
     await HomeWidget.saveWidgetData('level', level);
     await HomeWidget.saveWidgetData('liters', liters);
+    await HomeWidget.saveWidgetData('voltage', voltage);
+    await HomeWidget.saveWidgetData('isOnline', isOnline ? 'true' : 'false');
     await HomeWidget.updateWidget(androidName: 'WaterLevelWidgetProvider');
+  }
+
+  static Future<String> _fetchVoltage(Map data) {
+    final v = data['voltage'];
+    if (v == null) return Future.value('');
+    final double volt = double.tryParse(v.toString()) ?? 0;
+    return Future.value('${volt.toStringAsFixed(1)}V');
+  }
+
+  static Future<bool> _fetchIsOnline(Map data) {
+    final diffTime = data['diff_time'];
+    if (diffTime == null) return Future.value(true);
+    final seconds = int.tryParse(diffTime.toString()) ?? 0;
+    return Future.value(seconds < 300);
   }
 
   static Future<void> _fetchAndUpdateWidget(String publicKey, String deviceName) async {
@@ -89,11 +117,16 @@ class WidgetService {
         liters = '${double.tryParse(data['current_liters'].toString())?.toStringAsFixed(0) ?? '0'} L';
       }
 
+      final voltage = await _fetchVoltage(data);
+      final isOnline = await _fetchIsOnline(data);
+
       await saveSensorWidgetData(
         deviceName: deviceName,
         percent: '${(fillPct * 100).toStringAsFixed(0)}%',
         level: '${waterHeight.toStringAsFixed(1)} cm',
         liters: liters,
+        voltage: voltage,
+        isOnline: isOnline,
       );
     } catch (_) {}
   }
